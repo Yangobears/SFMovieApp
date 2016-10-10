@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>San Franscisco Movie Lover</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/css/bootstrap.css">
+    <link rel="stylesheet" href="css/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+</head>
+
+<body>
+    <a id="menu" class="header__menu col-xs-4 col-sm-4 text-right">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24">
+            <path d="M2 6h20v3H2zm0 5h20v3H2zm0 5h20v3H2z"/>
+        </svg>
+    </a>
+    <div class="search-panel">
+        <!-- App title  -->
+        <p class="search-title">SF Movie Spots</p>
+        <!-- Search panel -->
+        <p class="search-bar">
+            <i class="fa fa-database" type="button" data-bind="click: toggle">
+              <span class="tooltiptext">Toggle Movies</span>
+            </i>
+            <input type="text" data-bind="value: searchedMovie , valueUpdate: 'keyup'">
+            <i class="fa fa-search" data-bind="click: searchForMovie"></i>
+        </p>
+        <!-- Movie List -->
+        <ul data-bind="foreach: filteredMovies,  visible: showList">
+            <li class="movieListElem" data-bind="text: $data.title,
+
+                          css: {selectedMovie: $data == $root.selectedMovieId()},
+                          click: $parent.goToMovie">
+            </li>
+            <div class="movieInfo" data-bind="visible: $data == $root.selectedMovieId()">
+                <img class="movieBackDrop" data-bind="attr: { src: $data.backDropUrl}, visible: $data.backDropUrl" alt="backdrop image" width="150px">
+                <div class="movieDirector"> Director:<br>
+                    <p class="movieDirectorContent" data-bind="text: $data.director"></p>
+                </div>
+                <div class="movieYear"> Release Year:<br>
+                    <p class="movieYearContent" data-bind="text: $data.release_year"></p>
+                </div>
+                <div class="movieOverView"> Overview:<br>
+                    <img class="moviePoster" data-bind="attr: { src: $data.posterUrl},visible: $data.posterUrl" alt="poster image" width="50px">
+                    <p class="movieOverViewContent" data-bind="text: $data.overview"></p>
+                </div>
+            </div>
+        </ul>
+        <div class="notFound" data-bind="visible: noMatching"> Sorry the movie is not found </div>
+        <div class="errAPI" data-bind="visible: errAPICalling"> Sorry the connection failed, please try again. </div>
+    </div>
+    <div id="map"></div>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+    <!-- Google map  -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8lPBKS3A8cDVC2PVYMDfUCpTN-meole0&callback=initMap" async defer></script>
+    <script src="js/lib/jquery.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.header__menu {
+  display: none;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.toggle-button {
+  position: relative;
+  z-index: 12;
+
+}
+
+i {
+  margin: 0 5 0 5;
+  color: grey;
+  opacity: 0.7;
+  font-size: 20px;
+
+
+}
+i:hover {
+  color:red;
+
+}
+
+.search-panel {
+    width: 30%;
+    position: relative;
+    z-index: 11;
+    background-color: black;
+    font-size: 13px;
+    height: 100%;
+    overflow: scroll;
+}
+
+.search-title {
+    text-align: center;
+
+    font-family: sans-serif;
+    font-size: large;
+    color: red;
+    opacity: 0.7;
+}
+
+.search-bar {
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li, .notFound, .errAPI {
+    margin: 4px;
+    padding: 2px;
+    color: white;
+    text-align: center;
+    font-weight: 100;
+    font-family: sans-serif;
+    opacity: 0.5;
+}
+
+.selectedMovie {
+    color: red;
+}
+
+.movieListElem:hover {
+    color: red;
+}
+
+
+
+.gm-style-iw {
+  max-width: 300px;
+  overflow: scroll;
+  /*background-color: black;*/
+  color:grey;
+ }
+
+.movieBackDrop {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.movieDirectorContent, .movieYearContent {
+    display: inline-block;
+    margin: 0;
+    font-size: 10px;
+    color: white;
+}
+
+.movieOverViewContent {
+    margin: 0;
+    font-size: 10px;
+    color: white;
+}
+
+.movieInfo {
+    margin: 10px;
+}
+
+.movieDirector, .movieYear, .movieOverView {
+    font-size: 10px;
+    color: red;
+    opacity: 0.5;
+}
+
+.moviePoster {
+    float: left;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: 60px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 20;
+  display: inline-block;
+  font-size: 10px;
+}
+
+i:hover .tooltiptext {
+    visibility: visible;
+    font-family: sans-serif;
+}
+
+
+/* For smaller viewport */
+
+@media screen and (max-width: 768px) {
+  .search-panel {
+    display: none;
+
+      width:100%;
+      position: relative;
+      z-index: 11;
+      background-color: black;
+      font-size: 13px;
+      height: 40%;
+      overflow: scroll;
+  }
+
+
+  /* Header menu icon */
+    .header__menu {
+      z-index: 22;
+      float: left;
+        display: inline-block;
+        position: absolute;
+        padding: 1em;
+    }
+    .header__menu svg {
+        width: 32px;
+        background-color: red;
+
+        /*color: red;*/
+        /*margin-right: 20px;*/
+    }
+}
+
+
+/*. {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80px;
+}*/
