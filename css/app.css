@@ -5,7 +5,7 @@ html, body {
 }
 
 .header__menu {
-  display: none;
+    display: none;
 }
 
 #map {
@@ -18,22 +18,19 @@ html, body {
 }
 
 .toggle-button {
-  position: relative;
-  z-index: 12;
-
+    position: relative;
+    z-index: 12;
 }
 
 i {
-  margin: 0 5 0 5;
-  color: grey;
-  opacity: 0.7;
-  font-size: 20px;
-
-
+    margin: 0 5 0 5;
+    color: grey;
+    opacity: 0.7;
+    font-size: 20px;
 }
-i:hover {
-  color:red;
 
+i:hover {
+    color: red;
 }
 
 .search-panel {
@@ -48,7 +45,6 @@ i:hover {
 
 .search-title {
     text-align: center;
-
     font-family: sans-serif;
     font-size: large;
     color: red;
@@ -83,14 +79,11 @@ li, .notFound, .errAPI {
     color: red;
 }
 
-
-
 .gm-style-iw {
-  max-width: 300px;
-  overflow: scroll;
-  /*background-color: black;*/
-  color:grey;
- }
+    max-width: 300px;
+    overflow: scroll;
+    color: grey;
+}
 
 .movieBackDrop {
     display: block;
@@ -128,17 +121,17 @@ li, .notFound, .errAPI {
 }
 
 .tooltiptext {
-  visibility: hidden;
-  width: 60px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 20;
-  display: inline-block;
-  font-size: 10px;
+    visibility: hidden;
+    width: 60px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 20;
+    display: inline-block;
+    font-size: 10px;
 }
 
 i:hover .tooltiptext {
@@ -146,27 +139,27 @@ i:hover .tooltiptext {
     font-family: sans-serif;
 }
 
+.streetView {
+  width: 150px;
+}
+
 
 /* For smaller viewport */
 
 @media screen and (max-width: 768px) {
-  .search-panel {
-    display: none;
-
-      width:100%;
-      position: relative;
-      z-index: 11;
-      background-color: black;
-      font-size: 13px;
-      height: 40%;
-      overflow: scroll;
-  }
-
-
-  /* Header menu icon */
+    .search-panel {
+        display: none;
+        width: 100%;
+        position: relative;
+        z-index: 11;
+        background-color: black;
+        font-size: 13px;
+        height: 40%;
+        overflow: scroll;
+    }
+    /* Header menu icon */
     .header__menu {
-      z-index: 22;
-      float: left;
+        z-index: 22;
         display: inline-block;
         position: absolute;
         padding: 1em;
@@ -174,16 +167,8 @@ i:hover .tooltiptext {
     .header__menu svg {
         width: 32px;
         background-color: red;
-
-        /*color: red;*/
-        /*margin-right: 20px;*/
+    }
+    .streetView {
+      width: 100px;
     }
 }
-
-
-/*. {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80px;
-}*/

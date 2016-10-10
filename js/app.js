@@ -1,3 +1,4 @@
+// Init work.
 // Firebase Config
 var config = {
     apiKey: "AIzaSyDfTS8Ahh2LVuWtPP-SgTxxrhSgK-lIaRs",
@@ -45,7 +46,7 @@ function Location(data, movie) {
             contentString += '<p> Movie: ' + movie.title + '</p>';
             var streetViewUrl = "https://maps.googleapis.com/maps/api/streetview?size=150x75&location=" +
                 self.latlng.lat + ',' + self.latlng.lng;
-            contentString += '<img src=' + streetViewUrl + ' width=200px  alt="google street view" >';
+            contentString += '<img src=' + streetViewUrl + ' class="streetView"  alt="google street view" >';
             contentString += '<p> Location: ' + self.name + '</p>';
             if (self.fun_facts != null) {
                 contentString += '<br>Fun Facts:<p>' + self.fun_facts + '</p><br></div>';
@@ -73,33 +74,35 @@ function Location(data, movie) {
         self.marker.setMap(null);
     }
     self.show = function() {
-        self.marker.setMap(map);
-    }
-    // Push to location lists
+            self.marker.setMap(map);
+        }
+        // Push to location lists
     viewModel.selectedLocations.push(self);
     // When marker is clicked. show openWindow
     self.marker.addListener('click', openWindow);
+    self.marker.addListener('mousedown',openWindow);
 }
 
+// AJAX calls
 // Querying SF open data if the movie name has not been queried/ not in the list
 function querySF(movieList) {
     var self = this;
     self.queryByTitle = function(title) {
-            $.ajax({
-                url: "https://data.sfgov.org/resource/wwmu-gmzc.json",
-                type: "GET",
-                data: {
-                    "$limit": 50,
-                    "$$app_token": "k2UF9FelmewqoXDpYxFJrdNeQ",
-                    "title": title
-                },
-                success: self.success,
-                error: self.failure
-            });
+        $.ajax({
+            url: "https://data.sfgov.org/resource/wwmu-gmzc.json",
+            type: "GET",
+            data: {
+                "$limit": 50,
+                "$$app_token": "k2UF9FelmewqoXDpYxFJrdNeQ",
+                "title": title
+            },
+            success: self.success,
+            error: self.failure
+        });
 
-        }
+    }
 
-        // Create new movie which includes all locations
+    // Create new movie which includes all locations
     self.success = function(data) {
         if (data.length > 0) {
             // The way json is returned, all fields are same besides locations
@@ -147,6 +150,7 @@ function querySF(movieList) {
     }
 }
 
+// Call movie db api to get infomation and update the movie object in firebase.
 function getMovieInfo(movieTitle, ref) {
     $.ajax({
         url: "https://api.themoviedb.org/3/search/movie",
@@ -210,20 +214,6 @@ function getGeoCode(locationName, ref) {
     });
 }
 
-
-function addMovie(data) {
-    var val = data.val();
-    viewModel.movies.push(new Movie(val));
-}
-
-
-function addLocation(data, movie) {
-    var val = data.val();
-    var locationObj = new Location(val, movie);
-    locationObj.show();
-}
-
-
 // View
 function appViewModel() {
     var self = this;
@@ -236,14 +226,20 @@ function appViewModel() {
     self.lastOpenedWindow = null;
     self.lastBounceMarker = null;
     self.errAPICalling = ko.observable(false);
+    self.selectedMovieId = ko.observable();
+
     querySF = new querySF(this.movies);
+    // Call SF open data to retrieve info
     self.searchForMovie = function() {
         self.showList(true);
         querySF.queryByTitle(self.searchedMovie);
     }
+
+    // Toggle the list
     self.toggle = function() {
         self.showList(!self.showList());
     };
+
     // Filter all movies by the movie user searched
     self.filteredMovies = ko.computed(function() {
         self.noMatching(false);
@@ -256,7 +252,8 @@ function appViewModel() {
             });
         }
     });
-    self.selectedMovieId = ko.observable();
+
+    // Show all locations.
     self.goToMovie = function(movie) {
         if (self.selectedLocations.length > 0) {
             self.selectedLocations.forEach(function(marker) {
@@ -278,8 +275,7 @@ function appViewModel() {
             map.setCenter(self.selectedLocations[0].latlng);
         }
     };
-    self.filteredMarks = ko.computed(function() {
-    });
+    self.filteredMarks = ko.computed(function() {});
 
 }
 
@@ -289,10 +285,25 @@ moviesRef.once("value", function(snapshot) {
         addMovie)
 });
 
+// Instantiate viewModel
 viewModel = new appViewModel();
 
+// Add movie to viewModel.
+
+function addMovie(data) {
+    var val = data.val();
+    viewModel.movies.push(new Movie(val));
+}
+
+// Add Locaitons marker google map.
+function addLocation(data, movie) {
+    var val = data.val();
+    var locationObj = new Location(val, movie);
+    locationObj.show();
+}
+
+// Google map init, set satellite view as default.
 initMap = function() {
-    gg = google;
     sfLatLng = {
         lat: 37.773972,
         lng: -122.431297
@@ -307,10 +318,10 @@ initMap = function() {
         google.maps.event.trigger(map, "resize");
         map.setCenter(center);
     });
-    //initialize knockoutjs
     ko.applyBindings(viewModel);
 }
 
+// For responsive folding menu.
 $(document).ready(function() {
     $("#menu").click(function() {
         $(".search-panel").slideToggle("slow");
