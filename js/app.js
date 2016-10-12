@@ -39,6 +39,8 @@ function Location(data, movie) {
         position: self.latlng,
         title: self.name
     });
+    // Matching with the search bar.
+    self.matching = ko.observable(true);
     var openWindow = function() {
         if (!self.infowindow) {
             self.infowindow = new google.maps.InfoWindow();
@@ -70,17 +72,32 @@ function Location(data, movie) {
         }, 1000);
     };
 
+    // Hide marker.
     self.hide = function() {
         self.marker.setMap(null);
     }
+
+    // Show marker.
     self.show = function() {
-            self.marker.setMap(map);
-        }
-        // Push to location lists
+        self.marker.setMap(map);
+    }
+
+    //Update matching boolean and update marker accordingly.
+    self.update = function(matched) {
+      self.matching(matched);
+      if (matched) {
+          self.show();
+      } else {
+          self.hide();
+      }
+    }
+
+    // Push to location lists.
     viewModel.selectedLocations.push(self);
-    // When marker is clicked. show openWindow
+
+    // When marker is clicked. show openWindow.
     self.marker.addListener('click', openWindow);
-    self.marker.addListener('mousedown',openWindow);
+    self.marker.addListener('mousedown', openWindow);
 }
 
 // AJAX calls
@@ -99,7 +116,6 @@ function querySF(movieList) {
             success: self.success,
             error: self.failure
         });
-
     }
 
     // Create new movie which includes all locations
@@ -217,18 +233,18 @@ function getGeoCode(locationName, ref) {
 // View
 function appViewModel() {
     var self = this;
-    self.markers = [];
     self.searchedMovie = ko.observable();
+    self.searchedLocation = ko.observable();
     self.showList = ko.observable(true);
     self.noMatching = ko.observable(false);
     self.movies = ko.observableArray([]);
-    self.selectedLocations = [];
+    self.selectedLocations = ko.observableArray([]);
     self.lastOpenedWindow = null;
     self.lastBounceMarker = null;
     self.errAPICalling = ko.observable(false);
     self.selectedMovieId = ko.observable();
-
     querySF = new querySF(this.movies);
+
     // Call SF open data to retrieve info
     self.searchForMovie = function() {
         self.showList(true);
@@ -253,14 +269,35 @@ function appViewModel() {
         }
     });
 
+    // Update the filtered locations by the loaction user searched
+    self.filteredLocations = ko.computed(function() {
+        self.noMatching(false);
+        self.showList(true);
+        if (!self.searchedLocation()) {
+            self.selectedLocations().forEach(function(location) {
+                location.update(true);
+            });
+            return self.selectedLocations();
+        } else {
+            return ko.utils.arrayFilter(self.selectedLocations(), function(location) {
+                if (location.name.toLowerCase().indexOf(self.searchedLocation().toLowerCase()) >= 0) {
+                    location.update(true);
+                } else {
+                    location.update(false);
+                }
+            });
+        }
+    });
+
     // Show all locations.
     self.goToMovie = function(movie) {
-        if (self.selectedLocations.length > 0) {
-            self.selectedLocations.forEach(function(marker) {
-                marker.hide();
+        // Hide all locations from the previous movie.
+        if (self.selectedLocations().length > 0) {
+            self.selectedLocations().forEach(function(location) {
+                location.update(false);
             })
-            self.markers = [];
         }
+        self.selectedLocations.removeAll();
         self.selectedMovieId(movie);
         // Make all locations assocaited with the movie show up.
         var locIds = movie.locations;
@@ -275,7 +312,6 @@ function appViewModel() {
             map.setCenter(self.selectedLocations[0].latlng);
         }
     };
-    self.filteredMarks = ko.computed(function() {});
 
 }
 
@@ -289,7 +325,6 @@ moviesRef.once("value", function(snapshot) {
 viewModel = new appViewModel();
 
 // Add movie to viewModel.
-
 function addMovie(data) {
     var val = data.val();
     viewModel.movies.push(new Movie(val));

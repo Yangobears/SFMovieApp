@@ -55,6 +55,10 @@ i:hover {
     text-align: center;
 }
 
+.location-search-bar {
+    text-align: center;
+}
+
 ul {
     list-style: none;
     margin: 0;
@@ -91,14 +95,16 @@ li, .notFound, .errAPI {
     margin-right: auto;
 }
 
-.movieDirectorContent, .movieYearContent {
+.movieDirectorContent,
+.movieYearContent {
     display: inline-block;
     margin: 0;
     font-size: 10px;
     color: white;
 }
 
-.movieOverViewContent {
+.movieOverViewContent,
+.locationInfo {
     margin: 0;
     font-size: 10px;
     color: white;

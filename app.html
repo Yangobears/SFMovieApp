@@ -23,7 +23,7 @@
             <i class="fa fa-database" type="button" data-bind="click: toggle">
               <span class="tooltiptext">Toggle Movies</span>
             </i>
-            <input type="text" data-bind="value: searchedMovie , valueUpdate: 'keyup'">
+            <input type="text" data-bind="value: searchedMovie , valueUpdate: 'keyup'" placeholder="Search Movies">
             <i class="fa fa-search" data-bind="click: searchForMovie"></i>
         </p>
         <!-- Movie List -->
@@ -34,6 +34,13 @@
                           click: $parent.goToMovie">
             </li>
             <div class="movieInfo" data-bind="visible: $data == $root.selectedMovieId()">
+                <p class="search-bar">
+                    <input type="text" data-bind="value: $parent.searchedLocation , valueUpdate: 'keyup'" placeholder="Search Locations">
+                </p>
+                <ul data-bind="foreach: $parent.selectedLocations">
+                    <li class="locationInfo" data-bind="text: $data.name, visible: $data.matching">
+                    </li>
+                </ul>
                 <img class="movieBackDrop" data-bind="attr: { src: $data.backDropUrl}, visible: $data.backDropUrl" alt="backdrop image" width="150px">
                 <div class="movieDirector"> Director:<br>
                     <p class="movieDirectorContent" data-bind="text: $data.director"></p>
@@ -59,4 +66,5 @@
     <script src="js/lib/knockout-3.2.0.js"></script>
     <script src="js/app.js"></script>
 </body>
+
 </html>

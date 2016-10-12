@@ -1,6 +1,6 @@
 #About:
    This app is made from SF open data, movie spots in San Francisco. Use firebase to
-   store queried movies and places to avoid multiple api calls and parsing. 
+   store queried movies and places to avoid multiple api calls and parsing.
 
 #Steps to run the application:
 1. Open index.html in browser.
@@ -11,7 +11,10 @@
 3. Click on movies in the list, see its information and the places that it's being
 filmed within SF.
 
-4. Click on marker to see a google streetview picture of the place and the movie it's
+4. Search for a location showing up in the list and see the markers on map showing up
+accordingly.
+
+5. Click on marker to see a google streetview picture of the place and the movie it's
    associated with.
 
 
