@@ -2,9 +2,10 @@
 <html>
 
 <head>
-    <title>San Franscisco Movie Lover</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>San Franscisco Movie Lover</title>
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 </head>
@@ -38,7 +39,7 @@
                     <input type="text" data-bind="value: $parent.searchedLocation , valueUpdate: 'keyup'" placeholder="Search Locations">
                 </p>
                 <ul data-bind="foreach: $parent.selectedLocations">
-                    <li class="locationInfo" data-bind="text: $data.name, visible: $data.matching">
+                    <li class="locationInfo" data-bind="text: $data.name, visible: $data.matching, click: $data.bounce">
                     </li>
                 </ul>
                 <img class="movieBackDrop" data-bind="attr: { src: $data.backDropUrl}, visible: $data.backDropUrl" alt="backdrop image" width="150px">

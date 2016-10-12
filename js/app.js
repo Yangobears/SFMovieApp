@@ -41,7 +41,18 @@ function Location(data, movie) {
     });
     // Matching with the search bar.
     self.matching = ko.observable(true);
-    var openWindow = function() {
+    self.bounce = function() {
+      map.setCenter(self.latlng);
+      self.marker.setAnimation(google.maps.Animation.BOUNCE);
+      // Bounce the marker for a second.
+      setTimeout(function() {
+          self.marker.setAnimation(null)
+      }, 2000);
+    }
+    self.openWindow = function() {
+        // Animation
+        self.bounce();
+        // Show info window.
         if (!self.infowindow) {
             self.infowindow = new google.maps.InfoWindow();
             var contentString = '<div class="location-infowindow">';
@@ -57,19 +68,10 @@ function Location(data, movie) {
         }
         self.infowindow.open(map, self.marker);
         // Close the other opened window or bouncing markers.
-        if (viewModel.lastOpenedWindow != null) {
+        if (viewModel.lastOpenedWindow != null && viewModel.lastOpenedWindow != self.infowindow) {
             viewModel.lastOpenedWindow.close();
         }
-        if (viewModel.lastBounceMarker != null) {
-            viewModel.lastBounceMarker.setAnimation(null);
-        }
-        self.marker.setAnimation(google.maps.Animation.BOUNCE);
         viewModel.lastOpenedWindow = self.infowindow;
-        viewModel.lastBounceMarker = self.marker;
-        // Bounce the marker for a second.
-        setTimeout(function() {
-            self.marker.setAnimation(null)
-        }, 1000);
     };
 
     // Hide marker.
@@ -96,8 +98,7 @@ function Location(data, movie) {
     viewModel.selectedLocations.push(self);
 
     // When marker is clicked. show openWindow.
-    self.marker.addListener('click', openWindow);
-    self.marker.addListener('mousedown', openWindow);
+    self.marker.addListener('click', self.openWindow);
 }
 
 // AJAX calls
