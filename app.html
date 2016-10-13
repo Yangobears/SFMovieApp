@@ -39,7 +39,7 @@
                     <input type="text" data-bind="value: $parent.searchedLocation , valueUpdate: 'keyup'" placeholder="Search Locations">
                 </p>
                 <ul data-bind="foreach: $parent.selectedLocations">
-                    <li class="locationInfo" data-bind="text: $data.name, visible: $data.matching, click: $data.bounce">
+                    <li class="locationInfo" data-bind="text: $data.name, visible: $data.matching, click: $data.openWindow">
                     </li>
                 </ul>
                 <img class="movieBackDrop" data-bind="attr: { src: $data.backDropUrl}, visible: $data.backDropUrl" alt="backdrop image" width="150px">
@@ -59,13 +59,18 @@
         <div class="errAPI" data-bind="visible: errAPICalling"> Sorry the connection failed, please try again. </div>
     </div>
     <div id="map"></div>
+    <script>
+        function firebaseError() {
+            alert("Firebase failed to load");
+        }
+    </script>
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
-    <!-- Google map  -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8lPBKS3A8cDVC2PVYMDfUCpTN-meole0&callback=initMap" async defer></script>
+    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js" onerror="firebaseError()"></script>
     <script src="js/lib/jquery.min.js"></script>
     <script src="js/lib/knockout-3.2.0.js"></script>
     <script src="js/app.js"></script>
+    <!-- Google map  -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8lPBKS3A8cDVC2PVYMDfUCpTN-meole0&callback=initMap" async defer onerror="googleError()"></script>
 </body>
 
 </html>

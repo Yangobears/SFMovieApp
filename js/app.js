@@ -4,9 +4,10 @@ var config = {
     apiKey: "AIzaSyDfTS8Ahh2LVuWtPP-SgTxxrhSgK-lIaRs",
     authDomain: "sfmovieapp.firebaseapp.com",
     databaseURL: "https://sfmovieapp.firebaseio.com",
-    storageBucket: "bucket.appspot.com",
+    storageBucket: "bucket.appspot.com"
     // messagingSenderId: "1098510713899",
 };
+
 // Initialize Firebase and set reference for db, movies, locations.
 firebase.initializeApp(config);
 var db = firebase.database();
@@ -18,6 +19,7 @@ var locationsRef = ref.child("locations");
 // Models
 // Movie model that stores movie details and the locations id list.
 function Movie(data) {
+    'use strict';
     var self = this;
     self.title = data.title;
     self.locations = data.locations;
@@ -31,6 +33,7 @@ function Movie(data) {
 
 //Location model that stores marker, infoWindow, funfacts, name of the location.
 function Location(data, movie) {
+    'use strict';
     var self = this;
     self.name = data.name;
     self.fun_facts = data.fun_facts;
@@ -41,15 +44,7 @@ function Location(data, movie) {
     });
     // Matching with the search bar.
     self.matching = ko.observable(true);
-    self.bounce = function() {
-      map.setCenter(self.latlng);
-      self.marker.setAnimation(google.maps.Animation.BOUNCE);
-      // Bounce the marker for a second.
-      setTimeout(function() {
-          self.marker.setAnimation(null)
-      }, 2000);
-    }
-    self.openWindow = function() {
+    self.openWindow = function () {
         // Animation
         self.bounce();
         // Show info window.
@@ -57,18 +52,17 @@ function Location(data, movie) {
             self.infowindow = new google.maps.InfoWindow();
             var contentString = '<div class="location-infowindow">';
             contentString += '<p> Movie: ' + movie.title + '</p>';
-            var streetViewUrl = "https://maps.googleapis.com/maps/api/streetview?size=150x75&location=" +
-                self.latlng.lat + ',' + self.latlng.lng;
-            contentString += '<img src=' + streetViewUrl + ' class="streetView"  alt="google street view" >';
+            contentString += '<img src=' + "https://maps.googleapis.com/maps/api/streetview?size=150x75&location=" +
+                self.latlng.lat + ',' + self.latlng.lng + ' class="streetView"  alt="google street view" >';
             contentString += '<p> Location: ' + self.name + '</p>';
-            if (self.fun_facts != null) {
+            if (self.fun_facts !== null) {
                 contentString += '<br>Fun Facts:<p>' + self.fun_facts + '</p><br></div>';
             }
             self.infowindow.setContent(contentString);
         }
         self.infowindow.open(map, self.marker);
         // Close the other opened window or bouncing markers.
-        if (viewModel.lastOpenedWindow != null && viewModel.lastOpenedWindow != self.infowindow) {
+        if (viewModel.lastOpenedWindow !== null && viewModel.lastOpenedWindow !== self.infowindow) {
             viewModel.lastOpenedWindow.close();
         }
         viewModel.lastOpenedWindow = self.infowindow;
@@ -76,30 +70,41 @@ function Location(data, movie) {
 
     // Hide marker.
     self.hide = function() {
-        self.marker.setMap(null);
+        self.marker.setVisible(false);
     }
 
     // Show marker.
     self.show = function() {
-        self.marker.setMap(map);
+        self.marker.setVisible(true);
     }
 
     //Update matching boolean and update marker accordingly.
     self.update = function(matched) {
-      self.matching(matched);
-      if (matched) {
-          self.show();
-      } else {
-          self.hide();
-      }
+        self.matching(matched);
+        if (matched) {
+            self.show();
+        } else {
+            self.hide();
+        }
     }
 
-    // Push to location lists.
+    self.marker.setMap(map);
     viewModel.selectedLocations.push(self);
 
     // When marker is clicked. show openWindow.
     self.marker.addListener('click', self.openWindow);
 }
+
+Location.prototype.bounce = function() {
+    var self = this;
+    map.setCenter(self.latlng);
+    self.marker.setAnimation(google.maps.Animation.BOUNCE);
+    // Bounce the marker for a second.
+    setTimeout(function() {
+        self.marker.setAnimation(null)
+    }, 2100);
+}
+
 
 // AJAX calls
 // Querying SF open data if the movie name has not been queried/ not in the list
@@ -113,10 +118,8 @@ function querySF(movieList) {
                 "$limit": 50,
                 "$$app_token": "k2UF9FelmewqoXDpYxFJrdNeQ",
                 "title": title
-            },
-            success: self.success,
-            error: self.failure
-        });
+            }
+        }).done(self.success).fail(self.failure);
     }
 
     // Create new movie which includes all locations
@@ -131,11 +134,11 @@ function querySF(movieList) {
                 director: curr.director,
                 release_year: curr.release_year
             };
-            for (var i = 0; i < data.length; i++) {
-                var locationName = data[i].locations;
+            data.forEach(function(data) {
+                var locationName = data.locations;
                 var fun_facts = null;
-                if (data[i].fun_facts) {
-                    fun_facts = data[i].fun_facts;
+                if (data.fun_facts) {
+                    fun_facts = data.fun_facts;
                 }
                 var newLocation = {
                     name: locationName,
@@ -150,7 +153,8 @@ function querySF(movieList) {
                 movie.locations.push({
                     locId: locationId
                 });
-            }
+
+            });
             // Save movie to db
             var newMovieRef = moviesRef.push(movie);
             // Call movie api to get movie info
@@ -170,16 +174,17 @@ function querySF(movieList) {
 // Call movie db api to get infomation and update the movie object in firebase.
 function getMovieInfo(movieTitle, ref) {
     $.ajax({
-        url: "https://api.themoviedb.org/3/search/movie",
-        type: "GET",
-        data: {
-            "$limit": 1,
-            "api_key": "bdadc1817e54bd454aa8b6f1060c5f1d",
-            "language": "en-US",
-            "query": movieTitle,
-            "page": 1
-        },
-        success: function(data) {
+            url: "https://api.themoviedb.org/3/search/movie",
+            type: "GET",
+            data: {
+                "$limit": 1,
+                "api_key": "bdadc1817e54bd454aa8b6f1060c5f1d",
+                "language": "en-US",
+                "query": movieTitle,
+                "page": 1
+            }
+        })
+        .done(function(data) {
             if (data.results.length > 0) {
                 var result = data.results[0];
                 var purl = null;
@@ -202,12 +207,11 @@ function getMovieInfo(movieTitle, ref) {
                 });
 
             }
-        },
-        error: function() {
+        })
+        .fail(function() {
             viewModel.errAPICalling(true);
             console.log("Movie info failed to retrived ");
-        }
-    });
+        });
 }
 
 // Call google geo api to get lat long for location name
@@ -217,22 +221,24 @@ function getGeoCode(locationName, ref) {
         type: "GET",
         data: {
             "address": locationName
-        },
-        success: function(data) {
+        }
+    }).done(
+        function(data) {
             if (data.results.length > 0) {
                 ref.update({
                     latlng: data.results[0].geometry.location
                 });
             }
-        },
-        error: function() {
+        }).fail(
+
+        function() {
             console.log("google geo fail");
-        }
-    });
+        });
+
 }
 
 // View
-function appViewModel() {
+function AppViewModel() {
     var self = this;
     self.searchedMovie = ko.observable();
     self.searchedLocation = ko.observable();
@@ -306,7 +312,7 @@ function appViewModel() {
             var locId = locIds[i].locId;
             var locRef = new firebase.database().ref('locations/' + locId);
             locRef.on("value", function(snapshot) {
-                addLocation(snapshot, movie);
+                new Location(snapshot.val(), movie);
             });
         }
         if (self.selectedLocations.length > 0) {
@@ -323,19 +329,12 @@ moviesRef.once("value", function(snapshot) {
 });
 
 // Instantiate viewModel
-viewModel = new appViewModel();
+viewModel = new AppViewModel();
 
 // Add movie to viewModel.
 function addMovie(data) {
     var val = data.val();
     viewModel.movies.push(new Movie(val));
-}
-
-// Add Locaitons marker google map.
-function addLocation(data, movie) {
-    var val = data.val();
-    var locationObj = new Location(val, movie);
-    locationObj.show();
 }
 
 // Google map init, set satellite view as default.
@@ -355,6 +354,10 @@ initMap = function() {
         map.setCenter(center);
     });
     ko.applyBindings(viewModel);
+}
+
+function googleError() {
+    alert("Google Map failed to load");
 }
 
 // For responsive folding menu.
