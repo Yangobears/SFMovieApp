@@ -3,7 +3,7 @@
    store queried movies and places to avoid multiple api calls and parsing.
 
 #Steps to run the application:
-1. Open app.html in browser.
+1. Open index.html in browser.
 
 2. Search for a movie such as 'Milk' thats not already in the list to fetch info
    from SF open database / Skip to step 3.
